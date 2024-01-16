@@ -2,42 +2,45 @@ import { useEffect, useState } from "react";
 import { GithubProfileApiProps, GithubProfileSearchResults } from "../Types";
 
 
-type Results = {
-      data:GithubProfileSearchResults[];
-      loading:boolean;
-      error:Error | null;
-}
 
-export default function githubProfileSearchService({query,limit,page}:GithubProfileApiProps){
-      
-      const [data,setData] = useState<GithubProfileSearchResults[]>([]);
-      useEffect(() => {
-            
-           const controller = new AbortController();
-           const signal = controller.signal;
-           const url = `https://api.github.com/search/users?q=${query}&per_page=${limit}&page=${page}`;
-           if(query === "") {
-              setData([]);
-              return;
-           }
-      
+export default function githubProfileSearchService({ name, limit, page }: GithubProfileApiProps) {
 
-           fetch(url,{signal})
-             .then(res => res.json())
-             .then((res) => {setData(res.items)})
-             .catch(error => {
-                  if (error.name !== 'AbortError') {
-                      console.error(error.message)
-                  }
-              })
-             
+   const [data, setData] = useState<GithubProfileSearchResults[]>([]);
+   useEffect(() => {
 
-           return () => {
-              controller.abort();
-           }
-       },[page,limit,query]);
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const url = `https://api.github.com/search/users?q=${name}&per_page=${limit}&page=${page}`;
 
-       return data;
-    
+      if (name === "") {
+         setData([]);
+         return;
+      }
+
+
+
+      fetch(url, { signal })
+         .then(res => {
+            if (res.status === 200) return res.json();
+            else if (res.status === 403) throw Error('rate limit exceed refresh the page and try after some seconds');
+            else throw Error('An unexpected error occured refresh the page and try again')
+         })
+         .then(res => { setData(res.items) })
+         .catch(error => {
+            if (error.name === 'AbortError') return;
+
+            alert(error.message);
+
+         })
+
+
+      return () => {
+         if (name !== "")
+            controller.abort();
+      }
+   }, [page, limit, name]);
+
+   return data;
+
 
 }

@@ -1,7 +1,7 @@
 export type GithubProfileApiProps = {
     limit:number;
     page:number;
-    query:string;
+    name:string;
  }
 
 export type GithubProfileSearchResults = {

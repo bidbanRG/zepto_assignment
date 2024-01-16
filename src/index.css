@@ -10,7 +10,9 @@ body{
 }
 
 .search-results::-webkit-scrollbar {
+  margin-right:30px;
   width: 10px;
+  
 }
 
  .search-results::-webkit-scrollbar-thumb {
