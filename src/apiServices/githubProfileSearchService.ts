@@ -6,6 +6,7 @@ import { GithubProfileApiProps, GithubProfileSearchResults } from "../Types";
 export default function githubProfileSearchService({ name, limit, page }: GithubProfileApiProps) {
 
    const [data, setData] = useState<GithubProfileSearchResults[]>([]);
+   const [loading,setLoading] = useState<boolean>(false);
    useEffect(() => {
 
       const controller = new AbortController();
@@ -17,7 +18,7 @@ export default function githubProfileSearchService({ name, limit, page }: Github
          return;
       }
 
-
+      setLoading(true);
 
       fetch(url, { signal })
          .then(res => {
@@ -28,10 +29,10 @@ export default function githubProfileSearchService({ name, limit, page }: Github
          .then(res => { setData(res.items) })
          .catch(error => {
             if (error.name === 'AbortError') return;
-
+            setLoading(false);
             alert(error.message);
 
-         })
+         }).finally(() => {setLoading(false)});
 
 
       return () => {
@@ -40,7 +41,7 @@ export default function githubProfileSearchService({ name, limit, page }: Github
       }
    }, [page, limit, name]);
 
-   return data;
+   return {data,loading};
 
 
 }
