@@ -10,9 +10,9 @@ type Props = {
 
 export default function SelectedProfileList({ selectedProfile, onCancelProfile, selectLastChip }: Props) {
 
-    return <>{selectedProfile.map((props, index) => <Chip key={props.node_id} {...props} 
-                                                          onCancelProfile={onCancelProfile} 
-                                                          select={selectLastChip && index === selectedProfile.length - 1} 
-                                                      />)}
-                                                    </>
+    return <>{selectedProfile.map((props, index) => <Chip key={props.node_id} {...props}
+        onCancelProfile={onCancelProfile}
+        select={selectLastChip && index === selectedProfile.length - 1}
+    />)}
+    </>
 }
